@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaModule } from 'src/database/prisma.module';
 import { TweetsRepository } from './tweets.repository';
 import { TweetsService } from './tweets.service';
 
 @Module({
-  imports: [PrismaService],
+  imports: [PrismaModule],
   providers: [TweetsRepository, TweetsService],
 })
 export class TweetsModule {}

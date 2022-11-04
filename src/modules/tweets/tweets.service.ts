@@ -6,8 +6,8 @@ import { TweetsRepository } from './tweets.repository';
 export class TweetsService {
   constructor(private repository: TweetsRepository) {}
 
-  async createTweet(params: { content: Tweet[`content`]; id: User[`id`] }) {
-    const { content, id } = params;
+  async createTweet(params: { content: Tweet[`content`]; userId: User[`id`] }) {
+    const { content, userId } = params;
 
     // call repository layer
     const tweet = await this.repository.createTweet({
@@ -15,7 +15,7 @@ export class TweetsService {
         content,
         user: {
           connect: {
-            id,
+            id: userId,
           },
         },
       },

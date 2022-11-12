@@ -61,7 +61,7 @@ describe(`TweetsRepository`, () => {
 
     it(`> 280 character tweets should throw an error`, async () => {
       const payload = {
-        content: `This is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet.`,
+        content: `This is a super long tweet over 80 characters This is a super long tweet over 80 characters`,
         userId: 1234,
       };
 

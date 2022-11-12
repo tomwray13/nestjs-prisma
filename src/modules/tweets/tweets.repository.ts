@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, Tweet } from '@prisma/client';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 
 @Injectable()
 export class TweetsRepository {
@@ -8,6 +8,9 @@ export class TweetsRepository {
 
   async createTweet(params: { data: Prisma.TweetCreateInput }): Promise<Tweet> {
     const { data } = params;
+    if (data.content.length > 280) {
+      throw new Error(`Tweet too long`);
+    }
     return this.prisma.tweet.create({ data });
   }
 
@@ -27,6 +30,9 @@ export class TweetsRepository {
     data: Prisma.TweetUpdateInput;
   }): Promise<Tweet> {
     const { where, data } = params;
+    if (data.content && data.content > 280) {
+      throw new Error(`Tweet too long`);
+    }
     return this.prisma.tweet.update({ where, data });
   }
 

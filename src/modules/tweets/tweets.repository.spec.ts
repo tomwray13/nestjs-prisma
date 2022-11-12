@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
-import { PrismaService } from '../../../database/prisma.service';
-import { TweetsRepository } from '../tweets.repository';
+import { PrismaService } from '../../database/prisma.service';
+import { TweetsRepository } from './tweets.repository';
 import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 
 const tweets = [
@@ -32,21 +32,31 @@ describe(`TweetsRepository`, () => {
 
   describe(`createTweet`, () => {
     it(`should create a new tweet`, async () => {
-      const payload = { content: `Hello there`, userId: 1234 };
-      prismaService.tweet.create.mockResolvedValue(tweets[0]);
+      // Arrange
+      const mockedTweet = {
+        id: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        content: `Hello there`,
+        userId: 1234,
+      };
+      prismaService.tweet.create.mockResolvedValue(mockedTweet);
 
-      await expect(
+      // Act
+      const createTweet = () =>
         tweetsRepository.createTweet({
           data: {
-            content: payload.content,
+            content: mockedTweet.content,
             user: {
               connect: {
-                id: payload.userId,
+                id: mockedTweet.userId,
               },
             },
           },
-        }),
-      ).resolves.toBe(tweets[0]);
+        });
+
+      // Assert
+      await expect(createTweet()).resolves.toBe(mockedTweet);
     });
 
     it(`> 280 character tweets should throw an error`, async () => {
@@ -54,7 +64,8 @@ describe(`TweetsRepository`, () => {
         content: `This is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet, this is a super long tweet.`,
         userId: 1234,
       };
-      await expect(
+
+      const createTweet = () =>
         tweetsRepository.createTweet({
           data: {
             content: payload.content,
@@ -64,8 +75,9 @@ describe(`TweetsRepository`, () => {
               },
             },
           },
-        }),
-      ).rejects.toBeInstanceOf(Error);
+        });
+
+      expect(createTweet()).rejects.toBeInstanceOf(Error);
     });
   });
 
